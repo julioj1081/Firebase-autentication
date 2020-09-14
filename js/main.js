@@ -1,4 +1,4 @@
-//formulario signUp
+//formulario signUp REGISTRO
 const signupForm = document.querySelector("#signup-form");
 signupForm.addEventListener("submit", (e)=>{
     e.preventDefault();
@@ -19,7 +19,7 @@ signupForm.addEventListener("submit", (e)=>{
 });
 
 
-//formulario signIn login
+//formulario signIn LOGEO TIPICO
 const signinForm = document.querySelector("#login-form");
 signinForm.addEventListener("submit", e=>{
     e.preventDefault();
@@ -33,7 +33,7 @@ signinForm.addEventListener("submit", e=>{
         console.log("sign - in");
 
         //reseteo de formulario
-        signupForm.reset();
+        signinForm.reset();
         $('#signinModal').modal("hide");
     })
 });
@@ -49,7 +49,7 @@ logout.addEventListener("click", e => {
     });
 });
 
-//publicaciones
+// RECORRIDO DE PUBLICACIONES 
 const postList = document.querySelector("#posts");
 const setupPosts = data => {
     if(data.length){
@@ -67,7 +67,7 @@ const setupPosts = data => {
         });
         postList.innerHTML = html;
     }else{
-        postList.innerHTML = '<p class="text-center text-warning">No existen publicaciones || logeate ahora para verlas</p>'
+        postList.innerHTML = '<p class="text-center text-danger">No existen publicaciones || logeate ahora para verlas</p>'
     }
 }
 
@@ -85,4 +85,44 @@ auth.onAuthStateChanged(user => {
         //console.log("auth : no logeado - out");
         setupPosts([]);
     }
+});
+
+
+
+//LOGEO CON GOOGLE LOGIN
+const googleButton = document.querySelector("#googleLogin");
+
+googleButton.addEventListener("click", (e) => {
+  e.preventDefault();
+  signinForm.reset();
+  $("#signinModal").modal("hide");
+
+  const provider = new firebase.auth.GoogleAuthProvider();
+
+  auth.signInWithPopup(provider).then((result) => {
+        //console.log(result);
+        console.log("google sign in", result);
+        //reset form
+        signupForm.reset();
+        $('#signinModal').modal('hide');
+    }).catch(err => {
+    console.log(err);
+    })
+});
+
+
+//LOGEO CON FACEBOOK http://localhost:5500/  Inicio de sesión de OAuth de navegador integrado
+const facebookButton = document.querySelector("#facebookLogin");
+facebookButton.addEventListener("click", e => {
+    e.preventDefault();
+    const provider = new firebase.auth.FacebookAuthProvider();
+    auth.signInWithPopup(provider).then((result) => {
+        console.log(result);
+        console.log("sing in with face")
+        //reset form
+        signupForm.reset();
+        $('#signinModal').modal('hide');
+    }).catch(err => {
+        console.log(err);
+    })
 })
