@@ -14,7 +14,7 @@ signupForm.addEventListener("submit", (e)=>{
 
         //reseteo de formulario
         signupForm.reset();
-        $('#signup-form').modal("hide");
+        $('#signupModal').modal("hide");
     })
 });
 
@@ -34,7 +34,7 @@ signinForm.addEventListener("submit", e=>{
 
         //reseteo de formulario
         signupForm.reset();
-        $('#login-form').modal("hide");
+        $('#signinModal').modal("hide");
     })
 });
 
@@ -48,3 +48,41 @@ logout.addEventListener("click", e => {
         console.log('sing out');
     });
 });
+
+//publicaciones
+const postList = document.querySelector("#posts");
+const setupPosts = data => {
+    if(data.length){
+        let html = '';
+        data.forEach(doc => {
+            const post = doc.data()
+            console.log(post);
+            const li = `
+            <li class="list-group-item list-group-item-action">
+                    <h3>${post.titulo}</h3>
+                    <p>${post.descripcion}</p>
+            </li>
+            `;
+            html += li; 
+        });
+        postList.innerHTML = html;
+    }else{
+        postList.innerHTML = '<p class="text-center text-warning">No existen publicaciones || logeate ahora para verlas</p>'
+    }
+}
+
+//hacemos una consulta si esta autenticado
+//listado de auth en caso de estar autenticado o logeado
+auth.onAuthStateChanged(user => {
+    //si existe el usuario o esta logeado
+    if(user){
+        //console.log("auth : logeado - in");
+        fire.collection('posts').get().then((snapshot) => {
+            //console.log(snapshot.docs)
+            setupPosts(snapshot.docs);
+        })
+    }else{
+        //console.log("auth : no logeado - out");
+        setupPosts([]);
+    }
+})
